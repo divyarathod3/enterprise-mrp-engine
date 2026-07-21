@@ -1,85 +1,69 @@
+import { useEffect, useState } from "react";
+import { getItems } from "../services/itemService";
 import "../styles/InventoryTable.css";
 
-function InventoryTable(){
+function InventoryTable() {
 
-return(
+  const [items, setItems] = useState([]);
 
-<div className="table-container">
+  useEffect(() => {
+    loadItems();
+  }, []);
 
-<h2>Inventory</h2>
+  const loadItems = async () => {
+    try {
+      const response = await getItems();
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error loading inventory:", error);
+    }
+  };
 
-<table>
+  return (
+    <div className="table-container">
 
-<thead>
+      <h2>Inventory</h2>
 
-<tr>
+      <table>
 
-<th>Code</th>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
-<th>Name</th>
+        <tbody>
 
-<th>Quantity</th>
+          {items.length > 0 ? (
+            items.map((item) => (
+              <tr key={item.id}>
+                <td>{item.itemCode}</td>
+                <td>{item.itemName}</td>
+                <td>{item.quantity}</td>
+                <td>₹ {item.price}</td>
+                <td>
+                  {item.quantity < 10 ? "Low Stock" : "Available"}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" style={{ textAlign: "center" }}>
+                No Items Found
+              </td>
+            </tr>
+          )}
 
-<th>Price</th>
+        </tbody>
 
-<th>Status</th>
+      </table>
 
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>ITM001</td>
-
-<td>Laptop</td>
-
-<td>15</td>
-
-<td>65000</td>
-
-<td>Available</td>
-
-</tr>
-
-<tr>
-
-<td>ITM002</td>
-
-<td>Keyboard</td>
-
-<td>40</td>
-
-<td>1200</td>
-
-<td>Available</td>
-
-</tr>
-
-<tr>
-
-<td>ITM003</td>
-
-<td>Mouse</td>
-
-<td>8</td>
-
-<td>600</td>
-
-<td>Low Stock</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-)
-
+    </div>
+  );
 }
 
 export default InventoryTable;

@@ -1,10 +1,28 @@
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import StatCard from "../components/StatCard";
 import InventoryTable from "../components/InventoryTable";
+import { getItems } from "../services/itemService";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
+
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const loadItems = async () => {
+    try {
+      const response = await getItems();
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error loading items:", error);
+    }
+  };
+
   return (
     <div className="dashboard">
 
@@ -18,7 +36,7 @@ function Dashboard() {
 
           <StatCard
             title="Total Items"
-            value="150"
+            value={items.length}
           />
 
           <StatCard
