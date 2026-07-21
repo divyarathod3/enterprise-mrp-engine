@@ -11,12 +11,8 @@ function InventoryTable() {
   }, []);
 
   const loadItems = async () => {
-    try {
-      const response = await getItems();
-      setItems(response.data);
-    } catch (error) {
-      console.error("Error loading inventory:", error);
-    }
+    const response = await getItems();
+    setItems(response.data);
   };
 
   return (
@@ -27,36 +23,37 @@ function InventoryTable() {
       <table>
 
         <thead>
+
           <tr>
             <th>Code</th>
             <th>Name</th>
+            <th>Description</th>
             <th>Quantity</th>
             <th>Price</th>
             <th>Status</th>
           </tr>
+
         </thead>
 
         <tbody>
 
-          {items.length > 0 ? (
-            items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.itemCode}</td>
-                <td>{item.itemName}</td>
-                <td>{item.quantity}</td>
-                <td>₹ {item.price}</td>
-                <td>
-                  {item.quantity < 10 ? "Low Stock" : "Available"}
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
-                No Items Found
+          {items.map((item) => (
+
+            <tr key={item.id}>
+
+              <td>{item.itemCode}</td>
+              <td>{item.itemName}</td>
+              <td>{item.description}</td>
+              <td>{item.quantity}</td>
+              <td>₹ {item.price}</td>
+
+              <td>
+                {item.quantity < 10 ? "Low Stock" : "Available"}
               </td>
+
             </tr>
-          )}
+
+          ))}
 
         </tbody>
 
