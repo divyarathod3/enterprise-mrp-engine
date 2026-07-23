@@ -1,42 +1,61 @@
 import {
-FaHome,
-FaBoxes,
-FaTruck,
-FaShoppingCart,
-FaChartBar,
-FaCog
+  FaHome,
+  FaBoxes,
+  FaTruck,
+  FaShoppingCart,
+  FaChartBar,
+  FaCog
 } from "react-icons/fa";
+
+import { Link, useLocation } from "react-router-dom";
 
 import "../styles/Sidebar.css";
 
-function Sidebar(){
+function Sidebar() {
 
-return(
+  const location = useLocation();
 
-<div className="sidebar">
+  return (
 
-<h2>MRP Engine</h2>
+    <div className="sidebar">
 
-<ul>
+      <h2>MRP Engine</h2>
 
-<li><FaHome/> Dashboard</li>
+      <ul>
 
-<li><FaBoxes/> Inventory</li>
+        <li className={location.pathname === "/dashboard" ? "active" : ""}>
+          <Link to="/dashboard">
+            <FaHome /> Dashboard
+          </Link>
+        </li>
 
-<li><FaTruck/> Suppliers</li>
+        <li className={location.pathname === "/inventory" ? "active" : ""}>
+          <Link to="/inventory">
+            <FaBoxes /> Inventory
+          </Link>
+        </li>
 
-<li><FaShoppingCart/> Orders</li>
+        <li>
+          <FaTruck /> Suppliers
+        </li>
 
-<li><FaChartBar/> Reports</li>
+        <li>
+          <FaShoppingCart /> Orders
+        </li>
 
-<li><FaCog/> Settings</li>
+        <li>
+          <FaChartBar /> Reports
+        </li>
 
-</ul>
+        <li>
+          <FaCog /> Settings
+        </li>
 
-</div>
+      </ul>
 
-)
+    </div>
 
+  );
 }
 
 export default Sidebar;

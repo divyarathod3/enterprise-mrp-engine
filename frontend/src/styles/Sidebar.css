@@ -29,3 +29,31 @@ transition:.3s;
 .sidebar li:hover{
 background:#2563eb;
 }
+.sidebar ul{
+    list-style:none;
+    padding:0;
+}
+
+.sidebar li{
+    margin:15px 0;
+}
+
+.sidebar li a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:white;
+    padding:10px 15px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.sidebar li a:hover{
+    background:#2563eb;
+}
+
+.sidebar li.active a{
+    background:#2563eb;
+    font-weight:bold;
+}
