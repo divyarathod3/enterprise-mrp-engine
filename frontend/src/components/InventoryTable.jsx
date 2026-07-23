@@ -5,6 +5,7 @@ import "../styles/InventoryTable.css";
 function InventoryTable() {
 
   const [items, setItems] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadItems();
@@ -15,7 +16,7 @@ function InventoryTable() {
       const response = await getItems();
       setItems(response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Error loading items:", error);
     }
   };
 
@@ -42,6 +43,14 @@ function InventoryTable() {
 
       <h2>Inventory</h2>
 
+      <input
+        type="text"
+        placeholder="🔍 Search by Item Code or Name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-box"
+      />
+
       <table>
 
         <thead>
@@ -58,38 +67,58 @@ function InventoryTable() {
 
         <tbody>
 
-          {items.map((item) => (
+          {items
+            .filter((item) =>
+              item.itemName.toLowerCase().includes(search.toLowerCase()) ||
+              item.itemCode.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((item) => (
 
-            <tr key={item.id}>
+              <tr key={item.id}>
 
-              <td>{item.itemCode}</td>
-              <td>{item.itemName}</td>
-              <td>{item.description}</td>
-              <td>{item.quantity}</td>
-              <td>₹ {item.price}</td>
+                <td>{item.itemCode}</td>
 
-              <td>
-                {item.quantity < 10 ? "🔴 Low Stock" : "🟢 Available"}
-              </td>
+                <td>{item.itemName}</td>
 
-              <td>
+                <td>{item.description}</td>
 
-                <button className="edit-btn">
-                  ✏️ Edit
-                </button>
+                <td>{item.quantity}</td>
 
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(item.id)}
-                >
-                  🗑 Delete
-                </button>
+                <td>₹ {item.price}</td>
 
-              </td>
+                <td>
+                  {item.quantity < 10 ? (
+                    <span style={{ color: "red", fontWeight: "bold" }}>
+                      🔴 Low Stock
+                    </span>
+                  ) : (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      🟢 Available
+                    </span>
+                  )}
+                </td>
 
-            </tr>
+                <td>
 
-          ))}
+                  <button
+                    className="edit-btn"
+                    onClick={() => alert("Edit feature coming next!")}
+                  >
+                    ✏️ Edit
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    🗑 Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
 
         </tbody>
 
