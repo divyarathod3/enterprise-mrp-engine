@@ -2,6 +2,7 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import AddItemForm from "../components/AddItemForm";
 import InventoryTable from "../components/InventoryTable";
+import "../styles/Dashboard.css";
 
 function InventoryPage() {
   return (
@@ -13,7 +14,9 @@ function InventoryPage() {
 
         <Header />
 
-        <h2>Inventory Management</h2>
+        <h2 style={{ marginBottom: "20px" }}>
+          Inventory Management
+        </h2>
 
         <AddItemForm />
 
