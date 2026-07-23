@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import StatCard from "../components/StatCard";
-import InventoryTable from "../components/InventoryTable";
+import RecentInventory from "../components/RecentInventory";
 import { getItems } from "../services/itemService";
 import "../styles/Dashboard.css";
 
@@ -23,6 +23,12 @@ function Dashboard() {
     }
   };
 
+  const totalItems = items.length;
+
+  const lowStock = items.filter(
+    (item) => item.quantity < 10
+  ).length;
+
   return (
     <div className="dashboard">
 
@@ -36,12 +42,12 @@ function Dashboard() {
 
           <StatCard
             title="Total Items"
-            value={items.length}
+            value={totalItems}
           />
 
           <StatCard
             title="Low Stock"
-            value="12"
+            value={lowStock}
           />
 
           <StatCard
@@ -56,7 +62,7 @@ function Dashboard() {
 
         </div>
 
-        <InventoryTable />
+        <RecentInventory />
 
       </div>
 
