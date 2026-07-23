@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getItems } from "../services/itemService";
+import { getItems, deleteItem } from "../services/itemService";
 import "../styles/InventoryTable.css";
 
 function InventoryTable() {
@@ -11,8 +11,30 @@ function InventoryTable() {
   }, []);
 
   const loadItems = async () => {
-    const response = await getItems();
-    setItems(response.data);
+    try {
+      const response = await getItems();
+      setItems(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteItem(id);
+      loadItems();
+      alert("Item deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete item.");
+    }
   };
 
   return (
@@ -23,7 +45,6 @@ function InventoryTable() {
       <table>
 
         <thead>
-
           <tr>
             <th>Code</th>
             <th>Name</th>
@@ -31,8 +52,8 @@ function InventoryTable() {
             <th>Quantity</th>
             <th>Price</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
@@ -48,7 +69,22 @@ function InventoryTable() {
               <td>₹ {item.price}</td>
 
               <td>
-                {item.quantity < 10 ? "Low Stock" : "Available"}
+                {item.quantity < 10 ? "🔴 Low Stock" : "🟢 Available"}
+              </td>
+
+              <td>
+
+                <button className="edit-btn">
+                  ✏️ Edit
+                </button>
+
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(item.id)}
+                >
+                  🗑 Delete
+                </button>
+
               </td>
 
             </tr>
