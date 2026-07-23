@@ -5,7 +5,6 @@ import "../styles/AddItemForm.css";
 function AddItemForm({ refreshItems }) {
 
   const [item, setItem] = useState({
-    itemCode: "",
     itemName: "",
     description: "",
     quantity: "",
@@ -29,7 +28,6 @@ function AddItemForm({ refreshItems }) {
       alert("Item Added Successfully!");
 
       setItem({
-        itemCode: "",
         itemName: "",
         description: "",
         quantity: "",
@@ -56,14 +54,6 @@ function AddItemForm({ refreshItems }) {
       <form onSubmit={handleSubmit}>
 
         <input
-          name="itemCode"
-          placeholder="Item Code"
-          value={item.itemCode}
-          onChange={handleChange}
-          required
-        />
-
-        <input
           name="itemName"
           placeholder="Item Name"
           value={item.itemName}
@@ -85,6 +75,7 @@ function AddItemForm({ refreshItems }) {
           value={item.quantity}
           onChange={handleChange}
           required
+          min="0"
         />
 
         <input
@@ -94,6 +85,8 @@ function AddItemForm({ refreshItems }) {
           value={item.price}
           onChange={handleChange}
           required
+          min="0"
+          step="0.01"
         />
 
         <button type="submit">

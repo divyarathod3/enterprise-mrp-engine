@@ -16,6 +16,26 @@ public class ItemService {
 
     // Add Item
     public Item addItem(Item item) {
+
+        Item lastItem = itemRepository.findTopByOrderByIdDesc();
+
+        String newCode;
+
+        if (lastItem == null) {
+            newCode = "ITM001";
+        } else {
+
+            String lastCode = lastItem.getItemCode();
+
+            int number = Integer.parseInt(lastCode.substring(3));
+
+            number++;
+
+            newCode = String.format("ITM%03d", number);
+        }
+
+        item.setItemCode(newCode);
+
         return itemRepository.save(item);
     }
 
@@ -35,7 +55,8 @@ public class ItemService {
         Item existingItem = itemRepository.findById(id).orElse(null);
 
         if (existingItem != null) {
-            existingItem.setItemCode(item.getItemCode());
+
+            // Don't change Item Code
             existingItem.setItemName(item.getItemName());
             existingItem.setDescription(item.getDescription());
             existingItem.setPrice(item.getPrice());
