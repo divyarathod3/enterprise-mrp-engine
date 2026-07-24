@@ -35,8 +35,10 @@ function Sidebar() {
           </Link>
         </li>
 
-        <li>
-          <FaTruck /> Suppliers
+        <li className={location.pathname === "/suppliers" ? "active" : ""}>
+          <Link to="/suppliers">
+            <FaTruck /> Suppliers
+          </Link>
         </li>
 
         <li>
