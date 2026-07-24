@@ -1,57 +1,28 @@
-package com.company.mrp.service;
+// Add Supplier
+public Supplier addSupplier(Supplier supplier) {
 
-import java.util.List;
+    Supplier lastSupplier = supplierRepository.findTopByOrderByIdDesc();
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+    String newCode = "SUP001";
 
-import com.company.mrp.entity.Supplier;
-import com.company.mrp.repository.SupplierRepository;
+    if (lastSupplier != null &&
+        lastSupplier.getSupplierCode() != null &&
+        lastSupplier.getSupplierCode().startsWith("SUP")) {
 
-@Service
-public class SupplierService {
+        try {
 
-    @Autowired
-    private SupplierRepository supplierRepository;
+            int number = Integer.parseInt(lastSupplier.getSupplierCode().substring(3));
 
-    // Add Supplier
-    public Supplier addSupplier(Supplier supplier) {
-        return supplierRepository.save(supplier);
-    }
+            newCode = String.format("SUP%03d", number + 1);
 
-    // Get All Suppliers
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
-    }
+        } catch (NumberFormatException e) {
 
-    // Get Supplier By Id
-    public Supplier getSupplierById(Long id) {
-        return supplierRepository.findById(id).orElse(null);
-    }
+            newCode = "SUP001";
 
-    // Update Supplier
-    public Supplier updateSupplier(Long id, Supplier supplier) {
-
-        Supplier existingSupplier =
-                supplierRepository.findById(id).orElse(null);
-
-        if (existingSupplier != null) {
-
-            existingSupplier.setSupplierCode(supplier.getSupplierCode());
-            existingSupplier.setSupplierName(supplier.getSupplierName());
-            existingSupplier.setContactPerson(supplier.getContactPerson());
-            existingSupplier.setPhone(supplier.getPhone());
-            existingSupplier.setEmail(supplier.getEmail());
-            existingSupplier.setAddress(supplier.getAddress());
-
-            return supplierRepository.save(existingSupplier);
         }
-
-        return null;
     }
 
-    // Delete Supplier
-    public void deleteSupplier(Long id) {
-        supplierRepository.deleteById(id);
-    }
+    supplier.setSupplierCode(newCode);
+
+    return supplierRepository.save(supplier);
 }

@@ -49,7 +49,7 @@ function AddItemForm({ refreshItems }) {
 
     <div className="form-container">
 
-      <h2>Add New Item</h2>
+      <h2>➕ Add New Inventory Item</h2>
 
       <form onSubmit={handleSubmit}>
 
@@ -90,7 +90,7 @@ function AddItemForm({ refreshItems }) {
         />
 
         <button type="submit">
-          Add Item
+           Save Item
         </button>
 
       </form>
