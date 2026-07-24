@@ -14,30 +14,29 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    // Add Item
-    public Item addItem(Item item) {
+  // Add Item
+public Item addItem(Item item) {
 
-        Item lastItem = itemRepository.findTopByOrderByIdDesc();
+    String lastCode = itemRepository.findMaxItemCode();
 
-        String newCode;
+    String newCode;
 
-        if (lastItem == null) {
-            newCode = "ITM001";
-        } else {
+    if (lastCode == null) {
 
-            String lastCode = lastItem.getItemCode();
+        newCode = "ITM001";
 
-            int number = Integer.parseInt(lastCode.substring(3));
+    } else {
 
-            number++;
+        int number = Integer.parseInt(lastCode.substring(3));
 
-            newCode = String.format("ITM%03d", number);
-        }
+        newCode = String.format("ITM%03d", number + 1);
 
-        item.setItemCode(newCode);
-
-        return itemRepository.save(item);
     }
+
+    item.setItemCode(newCode);
+
+    return itemRepository.save(item);
+}
 
     // Get All Items
     public List<Item> getAllItems() {
