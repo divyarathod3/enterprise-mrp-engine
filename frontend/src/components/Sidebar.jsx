@@ -41,9 +41,11 @@ function Sidebar() {
           </Link>
         </li>
 
-        <li>
-          <FaShoppingCart /> Orders
-        </li>
+        <li className={location.pathname === "/purchase-orders" ? "active" : ""}>
+ 	 <Link to="/purchase-orders">
+   	 	<FaShoppingCart /> Purchase Orders
+  	</Link>
+	</li>
 
         <li>
           <FaChartBar /> Reports

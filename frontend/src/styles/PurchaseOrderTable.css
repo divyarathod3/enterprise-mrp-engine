@@ -1,0 +1,43 @@
+.table-container{
+    margin-top:20px;
+}
+
+.search-box{
+    width:300px;
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#0d6efd;
+    color:white;
+}
+
+.edit-btn{
+    background:#ffc107;
+    border:none;
+    padding:6px 10px;
+    cursor:pointer;
+    margin-right:5px;
+}
+
+.delete-btn{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:6px 10px;
+    cursor:pointer;
+}
