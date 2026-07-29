@@ -1,0 +1,29 @@
+.form-container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.form-container form{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.form-container input,
+.form-container select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+.form-container button{
+    grid-column:span 2;
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:12px;
+    cursor:pointer;
+    border-radius:5px;
+}
