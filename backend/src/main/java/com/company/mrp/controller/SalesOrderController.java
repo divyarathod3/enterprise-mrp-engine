@@ -17,24 +17,18 @@ public class SalesOrderController {
     private SalesOrderService service;
 
     @PostMapping
-    public SalesOrder add(@RequestBody SalesOrder order){
-
+    public SalesOrder add(@RequestBody SalesOrder order) {
         return service.addSalesOrder(order);
-
     }
 
     @GetMapping
-    public List<SalesOrder> getAll(){
-
+    public List<SalesOrder> getAll() {
         return service.getAll();
-
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-
+    public void delete(@PathVariable Long id) {
         service.delete(id);
-
     }
 
-}s
+}
