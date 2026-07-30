@@ -5,7 +5,7 @@ import InventoryPage from "./pages/InventoryPage";
 import SupplierPage from "./pages/SupplierPage";
 import PurchaseOrderPage from "./pages/PurchaseOrderPage";
 import GoodsReceiptPage from "./pages/GoodsReceiptPage";
-
+import SalesOrderPage from "./pages/SalesOrderPage";
 function App() {
   return (
     <BrowserRouter>
