@@ -1,0 +1,7 @@
+.form-card,
+.table-card {
+  background: white;
+  padding: 25px;
+  margin-top: 20px;
+  border-radius: 10px;
+}

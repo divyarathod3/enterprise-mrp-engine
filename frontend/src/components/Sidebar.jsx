@@ -53,6 +53,12 @@ function Sidebar() {
   	  </Link>
 	</li>
 
+	<li>
+ 	 <Link to="/sales-orders">
+    		<FaShoppingCart /> Sales Orders
+  	</Link>
+	</li>
+
         <li>
           <FaChartBar /> Reports
         </li>
