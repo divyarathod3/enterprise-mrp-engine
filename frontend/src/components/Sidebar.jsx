@@ -59,6 +59,10 @@ function Sidebar() {
   	</Link>
 	</li>
 
+	<li>
+  	<Link to="/invoice">Invoice Management</Link>
+	</li>
+
         <li>
           <FaChartBar /> Reports
         </li>

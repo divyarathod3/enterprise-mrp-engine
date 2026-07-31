@@ -6,6 +6,7 @@ import SupplierPage from "./pages/SupplierPage";
 import PurchaseOrderPage from "./pages/PurchaseOrderPage";
 import GoodsReceiptPage from "./pages/GoodsReceiptPage";
 import SalesOrderPage from "./pages/SalesOrderPage";
+import InvoicePage from "./pages/InvoicePage";
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,8 @@ function App() {
 	<Route path="/grn" element={<GoodsReceiptPage />} />
 
 	<Route path="/sales-orders" element={<SalesOrderPage />} />
+
+	<Route path="/invoice" element={<InvoicePage />} />
 
       </Routes>
 
