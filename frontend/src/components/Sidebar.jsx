@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
 import {
   FaHome,
   FaBoxes,
@@ -13,59 +12,67 @@ import {
   FaCog,
 } from "react-icons/fa";
 
-import "../styles/Sidebar.css";<nav className="sidebar-menu">
+import "../styles/Sidebar.css";
 
-  <div className="menu-title">MAIN</div>
+function Sidebar() {
+  return (
+    <div className="sidebar">
 
-  <NavLink to="/dashboard">
-    <FaHome />
-    <span>Dashboard</span>
-  </NavLink>
+      <div className="sidebar-logo">
+        <h2>MRP Engine</h2>
+      </div>
 
-  <div className="menu-title">INVENTORY</div>
+      <nav className="sidebar-menu">
 
-  <NavLink to="/items">
-    <FaBoxes />
-    <span>Items</span>
-  </NavLink>
+        <NavLink to="/" className="sidebar-link">
+          <FaHome />
+          <span>Dashboard</span>
+        </NavLink>
 
-  <NavLink to="/suppliers">
-    <FaTruck />
-    <span>Suppliers</span>
-  </NavLink>
+        <NavLink to="/inventory" className="sidebar-link">
+          <FaBoxes />
+          <span>Inventory</span>
+        </NavLink>
 
-  <NavLink to="/purchase-orders">
-    <FaShoppingCart />
-    <span>Purchase Orders</span>
-  </NavLink>
+        <NavLink to="/suppliers" className="sidebar-link">
+          <FaTruck />
+          <span>Suppliers</span>
+        </NavLink>
 
-  <NavLink to="/grn">
-    <FaBoxOpen />
-    <span>Goods Receipt</span>
-  </NavLink>
+        <NavLink to="/purchase-orders" className="sidebar-link">
+          <FaShoppingCart />
+          <span>Purchase Orders</span>
+        </NavLink>
 
-  <div className="menu-title">SALES</div>
+        <NavLink to="/grn" className="sidebar-link">
+          <FaBoxOpen />
+          <span>Goods Receipt</span>
+        </NavLink>
 
-  <NavLink to="/sales-orders">
-    <FaFileInvoice />
-    <span>Sales Orders</span>
-  </NavLink>
+        <NavLink to="/sales-orders" className="sidebar-link">
+          <FaReceipt />
+          <span>Sales Orders</span>
+        </NavLink>
 
-  <NavLink to="/invoice">
-    <FaReceipt />
-    <span>Invoices</span>
-  </NavLink>
+        <NavLink to="/invoice" className="sidebar-link">
+          <FaFileInvoice />
+          <span>Invoice</span>
+        </NavLink>
 
-  <div className="menu-title">SYSTEM</div>
+        <NavLink to="/reports" className="sidebar-link">
+          <FaChartBar />
+          <span>Reports</span>
+        </NavLink>
 
-  <NavLink to="/reports">
-    <FaChartBar />
-    <span>Reports</span>
-  </NavLink>
+        <NavLink to="/settings" className="sidebar-link">
+          <FaCog />
+          <span>Settings</span>
+        </NavLink>
 
-  <NavLink to="/settings">
-    <FaCog />
-    <span>Settings</span>
-  </NavLink>
+      </nav>
 
-</nav>
+    </div>
+  );
+}
+
+export default Sidebar;
