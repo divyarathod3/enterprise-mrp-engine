@@ -1,81 +1,71 @@
+import React from "react";
+import { NavLink } from "react-router-dom";
+
 import {
   FaHome,
   FaBoxes,
   FaTruck,
   FaShoppingCart,
+  FaBoxOpen,
+  FaFileInvoice,
+  FaReceipt,
   FaChartBar,
-  FaCog
+  FaCog,
 } from "react-icons/fa";
 
-import { Link, useLocation } from "react-router-dom";
+import "../styles/Sidebar.css";<nav className="sidebar-menu">
 
-import "../styles/Sidebar.css";
+  <div className="menu-title">MAIN</div>
 
-function Sidebar() {
+  <NavLink to="/dashboard">
+    <FaHome />
+    <span>Dashboard</span>
+  </NavLink>
 
-  const location = useLocation();
+  <div className="menu-title">INVENTORY</div>
 
-  return (
+  <NavLink to="/items">
+    <FaBoxes />
+    <span>Items</span>
+  </NavLink>
 
-    <div className="sidebar">
+  <NavLink to="/suppliers">
+    <FaTruck />
+    <span>Suppliers</span>
+  </NavLink>
 
-      <h2>MRP Engine</h2>
+  <NavLink to="/purchase-orders">
+    <FaShoppingCart />
+    <span>Purchase Orders</span>
+  </NavLink>
 
-      <ul>
+  <NavLink to="/grn">
+    <FaBoxOpen />
+    <span>Goods Receipt</span>
+  </NavLink>
 
-        <li className={location.pathname === "/dashboard" ? "active" : ""}>
-          <Link to="/dashboard">
-            <FaHome /> Dashboard
-          </Link>
-        </li>
+  <div className="menu-title">SALES</div>
 
-        <li className={location.pathname === "/inventory" ? "active" : ""}>
-          <Link to="/inventory">
-            <FaBoxes /> Inventory
-          </Link>
-        </li>
+  <NavLink to="/sales-orders">
+    <FaFileInvoice />
+    <span>Sales Orders</span>
+  </NavLink>
 
-        <li className={location.pathname === "/suppliers" ? "active" : ""}>
-          <Link to="/suppliers">
-            <FaTruck /> Suppliers
-          </Link>
-        </li>
+  <NavLink to="/invoice">
+    <FaReceipt />
+    <span>Invoices</span>
+  </NavLink>
 
-        <li className={location.pathname === "/purchase-orders" ? "active" : ""}>
- 	 <Link to="/purchase-orders">
-   	 	<FaShoppingCart /> Purchase Orders
-  	</Link>
-	</li>
-	
-	<li className={location.pathname === "/grn" ? "active" : ""}>
-    	<Link to="/grn">
-        	📦 Goods Receipt
-  	  </Link>
-	</li>
+  <div className="menu-title">SYSTEM</div>
 
-	<li>
- 	 <Link to="/sales-orders">
-    		<FaShoppingCart /> Sales Orders
-  	</Link>
-	</li>
+  <NavLink to="/reports">
+    <FaChartBar />
+    <span>Reports</span>
+  </NavLink>
 
-	<li>
-  	<Link to="/invoice">Invoice Management</Link>
-	</li>
+  <NavLink to="/settings">
+    <FaCog />
+    <span>Settings</span>
+  </NavLink>
 
-        <li>
-          <FaChartBar /> Reports
-        </li>
-
-        <li>
-          <FaCog /> Settings
-        </li>
-
-      </ul>
-
-    </div>
-
-  );
-}
-
-export default Sidebar;
+</nav>

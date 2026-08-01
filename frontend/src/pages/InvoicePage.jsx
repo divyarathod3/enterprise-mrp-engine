@@ -1,4 +1,3 @@
-```jsx
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import "../styles/InvoicePage.css";
@@ -50,4 +49,4 @@ function InvoicePage() {
 }
 
 export default InvoicePage;
-```
+
