@@ -1,20 +1,22 @@
-```css
-.dashboard-container {
-  display: flex;
-  min-height: 100vh;
-  background: #f4f6f9;
+.dashboard-container{
+    display:flex;
+    min-height:100vh;
+    background:#f4f7fc;
 }
 
-.dashboard-content {
-  flex: 1;
-  padding: 30px;
+.dashboard-content{
+    flex:1;
+    margin-left:260px;
+    padding:35px;
+    width:calc(100% - 260px);
+    box-sizing:border-box;
 }
 
-.page-title {
-  font-size: 30px;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 25px;
+.page-title{
+    font-size:42px;
+    font-weight:700;
+    color:#1e293b;
+    margin-bottom:30px;
 }
 
 .card {

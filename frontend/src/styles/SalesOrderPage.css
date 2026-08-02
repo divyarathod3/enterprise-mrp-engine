@@ -1,21 +1,24 @@
 .dashboard-container {
-  display: flex;
-  min-height: 100vh;
-  background: #f4f7fc;
+.dashboard-container{
+    display:flex;
+    min-height:100vh;
+    background:#f4f7fc;
 }
 
-.dashboard-content {
-  flex: 1;
-  padding: 40px;
+.dashboard-content{
+    flex:1;
+    margin-left:260px;
+    padding:35px;
+    width:calc(100% - 260px);
+    box-sizing:border-box;
 }
 
-.page-title {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  color: #111827;
+.page-title{
+    font-size:42px;
+    font-weight:700;
+    color:#1e293b;
+    margin-bottom:30px;
 }
-
 .card {
   background: #fff;
   border-radius: 15px;
