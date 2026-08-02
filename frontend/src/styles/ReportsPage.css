@@ -1,0 +1,131 @@
+.dashboard-container{
+    display:flex;
+    background:#f4f7f8;
+    min-height:100vh;
+}
+
+.dashboard-content{
+    flex:1;
+    margin-left:260px;
+    padding:30px;
+}
+
+.page-title{
+    color:#1b4332;
+    font-size:34px;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+.report-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.report-card{
+    background:#ffffff;
+    border-left:6px solid #2e7d32;
+    padding:22px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.report-card h3{
+    color:#555;
+    margin-bottom:10px;
+}
+
+.report-card h2{
+    color:#2e7d32;
+    font-size:30px;
+}
+
+.chart-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    margin-bottom:30px;
+}
+
+.chart-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.chart-placeholder{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-around;
+    height:220px;
+    margin-top:20px;
+}
+
+.bar{
+    width:40px;
+    background:#43a047;
+    border-radius:8px 8px 0 0;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.summary-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.summary-card table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.summary-card td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+.summary-card ul{
+    padding-left:20px;
+}
+
+.summary-card li{
+    margin:10px 0;
+}
+
+.download-card{
+    margin-top:30px;
+    background:white;
+    padding:25px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.download-buttons{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.download-buttons button{
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    background:#2e7d32;
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.download-buttons button:hover{
+    background:#1b5e20;
+}
