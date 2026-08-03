@@ -8,6 +8,8 @@ import GoodsReceiptPage from "./pages/GoodsReceiptPage";
 import SalesOrderPage from "./pages/SalesOrderPage";
 import InvoicePage from "./pages/InvoicePage";
 import ReportsPage from "./pages/ReportsPage";
+import SettingsPage from "./pages/SettingsPage";
+
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +33,9 @@ function App() {
 	<Route path="/invoice" element={<InvoicePage />} />
 	
 	<Route path="/reports" element={<ReportsPage />} />
+
+	<Route path="/settings" element={<SettingsPage />} />
+
 
       </Routes>
 
