@@ -1,86 +1,438 @@
-package com.company.mrp.service;
+import React, { useState, useEffect } from "react";
+import Sidebar from "../components/Sidebar";
+import "../styles/SalesOrderPage.css";
 
-import java.util.List;
+import axios from "axios";
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+function SalesOrderPage() {
 
-import com.company.mrp.dto.SalesOrderRequest;
-import com.company.mrp.entity.Customer;
-import com.company.mrp.entity.Item;
-import com.company.mrp.entity.SalesOrder;
-import com.company.mrp.repository.CustomerRepository;
-import com.company.mrp.repository.ItemRepository;
-import com.company.mrp.repository.SalesOrderRepository;
+    const [customers, setCustomers] = useState([]);
+    const [items, setItems] = useState([]);
+    const [orders, setOrders] = useState([]);
 
-@Service
-public class SalesOrderService {
+    const [selectedItem, setSelectedItem] = useState(null);
 
-    @Autowired
-    private SalesOrderRepository repository;
+    const [form, setForm] = useState({
 
-    @Autowired
-    private CustomerRepository customerRepository;
+        customerId: "",
+        itemId: "",
+        quantity: "",
+        orderDate: ""
 
-    @Autowired
-    private ItemRepository itemRepository;
+    });
 
-    public SalesOrder addSalesOrder(SalesOrderRequest request) {
+    useEffect(() => {
 
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        loadCustomers();
+        loadItems();
+        loadOrders();
 
-        Item item = itemRepository.findById(request.getItemId())
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+    }, []);
 
-        if (item.getQuantity() < request.getQuantity()) {
-            throw new RuntimeException("Insufficient Stock");
-        }
+    const loadCustomers = async () => {
 
-        SalesOrder last = repository.findTopByOrderByIdDesc();
+        try {
 
-        String code = "SO001";
+            const res = await axios.get("http://localhost:8081/api/customers");
 
-        if (last != null && last.getSalesOrderCode() != null) {
+            setCustomers(res.data);
 
-            try {
+        } catch (err) {
 
-                int num = Integer.parseInt(last.getSalesOrderCode().substring(2));
-
-                code = String.format("SO%03d", num + 1);
-
-            } catch (Exception e) {
-            }
+            console.log(err);
 
         }
 
-        SalesOrder order = new SalesOrder();
+    };
 
-        order.setSalesOrderCode(code);
-        order.setCustomer(customer);
-        order.setItem(item);
-        order.setQuantity(request.getQuantity());
-        order.setPrice(item.getPrice());
-        order.setOrderDate(request.getOrderDate());
+    const loadItems = async () => {
 
-        item.setQuantity(item.getQuantity() - request.getQuantity());
+        try {
 
-        itemRepository.save(item);
+            const res = await axios.get("http://localhost:8081/api/items");
 
-        return repository.save(order);
+            setItems(res.data);
 
-    }
+        } catch (err) {
 
-    public List<SalesOrder> getAll() {
+            console.log(err);
 
-        return repository.findAll();
+        }
 
-    }
+    };
 
-    public void delete(Long id) {
+    const loadOrders = async () => {
 
-        repository.deleteById(id);
+        try {
 
-    }
+            const res = await axios.get("http://localhost:8081/api/sales-orders");
+
+            setOrders(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+
+        }
+
+    };
+
+    const handleChange = (e) => {
+
+        const { name, value } = e.target;
+
+        setForm({
+
+            ...form,
+
+            [name]: value
+
+        });
+
+        if (name === "itemId") {
+
+            const item = items.find(
+
+                i => i.id === Number(value)
+
+            );
+
+            setSelectedItem(item);
+
+        }
+
+    };
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        if (!selectedItem) {
+
+            alert("Please select Item");
+
+            return;
+
+        }
+
+        if (Number(form.quantity) > selectedItem.quantity) {
+
+            alert("Not enough stock available");
+
+            return;
+
+        }
+
+        try {
+
+            await axios.post(
+
+                "http://localhost:8081/api/sales-orders",
+
+                form
+
+            );
+
+            alert("Sales Order Created Successfully");
+
+            loadOrders();
+
+            setForm({
+
+                customerId: "",
+                itemId: "",
+                quantity: "",
+                orderDate: ""
+
+            });
+
+            setSelectedItem(null);
+
+        } catch (err) {
+
+            console.log(err);
+
+            alert("Error Creating Sales Order");
+
+        }
+
+    };
+
+    const deleteOrder = async (id) => {
+
+        if (!window.confirm("Delete this Sales Order?"))
+
+            return;
+
+        try {
+
+            await axios.delete(
+
+                `http://localhost:8081/api/sales-orders/${id}`
+
+            );
+
+            loadOrders();
+
+        } catch (err) {
+
+            console.log(err);
+
+        }
+
+    };
+    return (
+
+        <div className="dashboard-container">
+
+            <Sidebar />
+
+            <div className="dashboard-content">
+
+                <h1 className="page-title">
+                    Sales Order Management
+                </h1>
+
+                <div className="card">
+
+                    <h2>Create Sales Order</h2>
+
+                    <form onSubmit={handleSubmit}>
+
+                        <div className="form-grid">
+
+                            <select
+                                name="customerId"
+                                value={form.customerId}
+                                onChange={handleChange}
+                                required
+                            >
+
+                                <option value="">
+                                    Select Customer
+                                </option>
+
+                                {
+
+                                    customers.map(customer => (
+
+                                        <option
+                                            key={customer.id}
+                                            value={customer.id}
+                                        >
+
+                                            {customer.customerCode} - {customer.customerName}
+
+                                        </option>
+
+                                    ))
+
+                                }
+
+                            </select>
+
+                            <select
+                                name="itemId"
+                                value={form.itemId}
+                                onChange={handleChange}
+                                required
+                            >
+
+                                <option value="">
+                                    Select Item
+                                </option>
+
+                                {
+
+                                    items.map(item => (
+
+                                        <option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+
+                                            {item.itemCode} - {item.itemName}
+
+                                        </option>
+
+                                    ))
+
+                                }
+
+                            </select>
+
+                            <input
+                                type="number"
+                                name="quantity"
+                                placeholder="Quantity"
+                                value={form.quantity}
+                                onChange={handleChange}
+                                required
+                            />
+
+                            <input
+                                type="date"
+                                name="orderDate"
+                                value={form.orderDate}
+                                onChange={handleChange}
+                                required
+                            />
+
+                        </div>
+
+                        {
+
+                            selectedItem && (
+
+                                <div className="stock-box">
+
+                                    <div>
+
+                                        <strong>Price</strong>
+
+                                        <p>₹ {selectedItem.price}</p>
+
+                                    </div>
+
+                                    <div>
+
+                                        <strong>Available Stock</strong>
+
+                                        <p>{selectedItem.quantity}</p>
+
+                                    </div>
+
+                                    <div>
+
+                                        <strong>Description</strong>
+
+                                        <p>{selectedItem.description}</p>
+
+                                    </div>
+
+                                </div>
+
+                            )
+
+                        }
+
+                        <button
+                            type="submit"
+                            className="btn-primary"
+                        >
+
+                            Create Sales Order
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div className="card">
+
+                    <h2>Sales Orders</h2>
+
+                    <table className="data-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>SO Code</th>
+
+                                <th>Customer</th>
+
+                                <th>Item</th>
+
+                                <th>Quantity</th>
+
+                                <th>Price</th>
+
+                                <th>Date</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {
+
+                                orders.length === 0 ?
+
+                                (
+
+                                    <tr>
+
+                                        <td
+                                            colSpan="7"
+                                            className="no-data"
+                                        >
+
+                                            No Sales Orders Found
+
+                                        </td>
+
+                                    </tr>
+
+                                )
+
+                                :
+
+                                (
+
+                                    orders.map(order => (
+
+                                        <tr key={order.id}>
+
+                                            <td>{order.salesOrderCode}</td>
+
+                                            <td>{order.customer?.customerName}</td>
+
+                                            <td>{order.item?.itemName}</td>
+
+                                            <td>{order.quantity}</td>
+
+                                            <td>₹ {order.price}</td>
+
+                                            <td>{order.orderDate}</td>
+
+                                            <td>
+
+                                                <button
+                                                    className="btn-delete"
+                                                    onClick={() => deleteOrder(order.id)}
+                                                >
+
+                                                    Delete
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))
+
+                                )
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    );
 
 }
+
+export default SalesOrderPage;
