@@ -5,51 +5,36 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.company.mrp.dto.InvoiceRequest;
 import com.company.mrp.entity.Invoice;
 import com.company.mrp.service.InvoiceService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/invoices")
+@CrossOrigin(origins = "http://localhost:3000")
 public class InvoiceController {
 
     @Autowired
-    private InvoiceService invoiceService;
+    private InvoiceService service;
 
     @PostMapping
-    public Invoice addInvoice(@RequestBody Invoice invoice) {
+    public Invoice create(@RequestBody InvoiceRequest request) {
 
-        return invoiceService.addInvoice(invoice);
+        return service.createInvoice(request);
 
     }
 
     @GetMapping
-    public List<Invoice> getAllInvoices() {
+    public List<Invoice> getAll() {
 
-        return invoiceService.getAllInvoices();
-
-    }
-
-    @GetMapping("/{id}")
-    public Invoice getInvoice(@PathVariable Long id) {
-
-        return invoiceService.getInvoiceById(id);
-
-    }
-
-    @PutMapping("/{id}")
-    public Invoice updateInvoice(
-            @PathVariable Long id,
-            @RequestBody Invoice invoice) {
-
-        return invoiceService.updateInvoice(id, invoice);
+        return service.getAllInvoices();
 
     }
 
     @DeleteMapping("/{id}")
-    public void deleteInvoice(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
 
-        invoiceService.deleteInvoice(id);
+        service.deleteInvoice(id);
 
     }
 

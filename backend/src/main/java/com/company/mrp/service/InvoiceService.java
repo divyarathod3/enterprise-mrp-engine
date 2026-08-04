@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mrp.dto.InvoiceRequest;
 import com.company.mrp.entity.Invoice;
+import com.company.mrp.entity.SalesOrder;
 import com.company.mrp.repository.InvoiceRepository;
+import com.company.mrp.repository.SalesOrderRepository;
 
 @Service
 public class InvoiceService {
@@ -14,89 +17,55 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    // Add Invoice
-    public Invoice addInvoice(Invoice invoice) {
+    @Autowired
+    private SalesOrderRepository salesOrderRepository;
 
-        Invoice lastInvoice = invoiceRepository.findTopByOrderByIdDesc();
+    public Invoice createInvoice(InvoiceRequest request) {
 
-        String newCode = "INV001";
+        SalesOrder salesOrder = salesOrderRepository.findById(request.getSalesOrderId())
+                .orElseThrow(() -> new RuntimeException("Sales Order Not Found"));
 
-        if (lastInvoice != null &&
-                lastInvoice.getInvoiceCode() != null &&
-                lastInvoice.getInvoiceCode().startsWith("INV")) {
+        Invoice last = invoiceRepository.findTopByOrderByIdDesc();
+
+        String code = "INV001";
+
+        if (last != null && last.getInvoiceCode() != null) {
 
             try {
 
-                int number = Integer.parseInt(lastInvoice.getInvoiceCode().substring(3));
+                int number = Integer.parseInt(last.getInvoiceCode().substring(3));
 
-                newCode = String.format("INV%03d", number + 1);
+                code = String.format("INV%03d", number + 1);
 
             } catch (Exception e) {
-
-                newCode = "INV001";
 
             }
 
         }
 
-        invoice.setInvoiceCode(newCode);
+        double subtotal = salesOrder.getPrice() * salesOrder.getQuantity();
 
-        if (invoice.getQuantity() != null &&
-                invoice.getUnitPrice() != null) {
+        double gst = subtotal * 0.18;
 
-            invoice.setTotalAmount(
-                    invoice.getQuantity() * invoice.getUnitPrice());
+        double total = subtotal + gst;
 
-        }
+        Invoice invoice = new Invoice();
+
+        invoice.setInvoiceCode(code);
+        invoice.setSalesOrder(salesOrder);
+        invoice.setInvoiceDate(request.getInvoiceDate());
+        invoice.setGst(gst);
+        invoice.setTotal(total);
 
         return invoiceRepository.save(invoice);
 
     }
-
-    // Get All
 
     public List<Invoice> getAllInvoices() {
 
         return invoiceRepository.findAll();
 
     }
-
-    // Get By Id
-
-    public Invoice getInvoiceById(Long id) {
-
-        return invoiceRepository.findById(id).orElse(null);
-
-    }
-
-    // Update
-
-    public Invoice updateInvoice(Long id, Invoice invoice) {
-
-        Invoice existing = invoiceRepository.findById(id).orElse(null);
-
-        if (existing != null) {
-
-            existing.setSalesOrderCode(invoice.getSalesOrderCode());
-            existing.setCustomerName(invoice.getCustomerName());
-            existing.setItemName(invoice.getItemName());
-            existing.setQuantity(invoice.getQuantity());
-            existing.setUnitPrice(invoice.getUnitPrice());
-
-            existing.setTotalAmount(
-                    invoice.getQuantity() * invoice.getUnitPrice());
-
-            existing.setInvoiceDate(invoice.getInvoiceDate());
-
-            return invoiceRepository.save(existing);
-
-        }
-
-        return null;
-
-    }
-
-    // Delete
 
     public void deleteInvoice(Long id) {
 

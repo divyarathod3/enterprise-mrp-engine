@@ -14,28 +14,21 @@ public class Invoice {
     @Column(unique = true)
     private String invoiceCode;
 
-    private String salesOrderCode;
+    @ManyToOne
+    @JoinColumn(name = "sales_order_id")
+    private SalesOrder salesOrder;
 
-    private String customerName;
+    private Double gst;
 
-    private String itemName;
-
-    private Integer quantity;
-
-    private Double unitPrice;
-
-    private Double totalAmount;
+    private Double total;
 
     private LocalDate invoiceDate;
 
-    public Invoice() {}
+    public Invoice() {
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getInvoiceCode() {
@@ -46,52 +39,28 @@ public class Invoice {
         this.invoiceCode = invoiceCode;
     }
 
-    public String getSalesOrderCode() {
-        return salesOrderCode;
+    public SalesOrder getSalesOrder() {
+        return salesOrder;
     }
 
-    public void setSalesOrderCode(String salesOrderCode) {
-        this.salesOrderCode = salesOrderCode;
+    public void setSalesOrder(SalesOrder salesOrder) {
+        this.salesOrder = salesOrder;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public Double getGst() {
+        return gst;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setGst(Double gst) {
+        this.gst = gst;
     }
 
-    public String getItemName() {
-        return itemName;
+    public Double getTotal() {
+        return total;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public Double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setTotal(Double total) {
+        this.total = total;
     }
 
     public LocalDate getInvoiceDate() {
@@ -101,4 +70,5 @@ public class Invoice {
     public void setInvoiceDate(LocalDate invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
+
 }
