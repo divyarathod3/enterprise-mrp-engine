@@ -14,11 +14,13 @@ public class SalesOrder {
     @Column(unique = true)
     private String salesOrderCode;
 
-    private String customerName;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-    private String itemCode;
-
-    private String itemName;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     private Integer quantity;
 
@@ -26,7 +28,8 @@ public class SalesOrder {
 
     private LocalDate orderDate;
 
-    public SalesOrder() {}
+    public SalesOrder() {
+    }
 
     public Long getId() {
         return id;
@@ -40,28 +43,20 @@ public class SalesOrder {
         this.salesOrderCode = salesOrderCode;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public String getItemCode() {
-        return itemCode;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemCode(String itemCode) {
-        this.itemCode = itemCode;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public Integer getQuantity() {
