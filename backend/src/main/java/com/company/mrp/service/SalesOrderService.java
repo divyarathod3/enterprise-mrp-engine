@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.mrp.dto.SalesOrderRequest;
+import com.company.mrp.entity.Customer;
 import com.company.mrp.entity.Item;
 import com.company.mrp.entity.SalesOrder;
+import com.company.mrp.repository.CustomerRepository;
 import com.company.mrp.repository.ItemRepository;
 import com.company.mrp.repository.SalesOrderRepository;
 
@@ -17,53 +20,64 @@ public class SalesOrderService {
     private SalesOrderRepository repository;
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private ItemRepository itemRepository;
 
-    public SalesOrder addSalesOrder(SalesOrder order){
+    public SalesOrder addSalesOrder(SalesOrderRequest request) {
+
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        if (item.getQuantity() < request.getQuantity()) {
+            throw new RuntimeException("Insufficient Stock");
+        }
 
         SalesOrder last = repository.findTopByOrderByIdDesc();
 
-        String code="SO001";
+        String code = "SO001";
 
-        if(last!=null && last.getSalesOrderCode()!=null){
+        if (last != null && last.getSalesOrderCode() != null) {
 
-            try{
+            try {
 
-                int num=Integer.parseInt(last.getSalesOrderCode().substring(2));
+                int num = Integer.parseInt(last.getSalesOrderCode().substring(2));
 
-                code=String.format("SO%03d",num+1);
+                code = String.format("SO%03d", num + 1);
 
-            }catch(Exception e){}
-
-        }
-
-        order.setSalesOrderCode(code);
-
-        for(Item item:itemRepository.findAll()){
-
-            if(item.getItemCode().equals(order.getItemCode())){
-
-                item.setQuantity(item.getQuantity()-order.getQuantity());
-
-                itemRepository.save(item);
-
-                break;
-
+            } catch (Exception e) {
             }
 
         }
+
+        SalesOrder order = new SalesOrder();
+
+        order.setSalesOrderCode(code);
+        order.setCustomer(customer);
+        order.setItem(item);
+        order.setQuantity(request.getQuantity());
+        order.setPrice(item.getPrice());
+        order.setOrderDate(request.getOrderDate());
+
+        item.setQuantity(item.getQuantity() - request.getQuantity());
+
+        itemRepository.save(item);
 
         return repository.save(order);
 
     }
 
-    public List<SalesOrder> getAll(){
+    public List<SalesOrder> getAll() {
 
         return repository.findAll();
 
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
 
         repository.deleteById(id);
 
