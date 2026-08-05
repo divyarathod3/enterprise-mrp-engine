@@ -1,15 +1,25 @@
-package com.company.mrp.repository;
+package com.company.mrp.dto;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public class InvoiceRequest {
 
-import com.company.mrp.entity.SalesOrder;
+    private Long salesOrderId;
+    private LocalDate invoiceDate;
 
-public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
+    public Long getSalesOrderId() {
+        return salesOrderId;
+    }
 
-    SalesOrder findTopByOrderByIdDesc();
+    public void setSalesOrderId(Long salesOrderId) {
+        this.salesOrderId = salesOrderId;
+    }
 
-    Optional<SalesOrder> findById(Long id);
+    public LocalDate getInvoiceDate() {
+        return invoiceDate;
+    }
 
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
 }

@@ -1,7 +1,8 @@
 package com.company.mrp.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "sales_orders")
@@ -27,9 +28,6 @@ public class SalesOrder {
     private Double price;
 
     private LocalDate orderDate;
-
-    public SalesOrder() {
-    }
 
     public Long getId() {
         return id;

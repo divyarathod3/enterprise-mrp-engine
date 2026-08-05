@@ -1,438 +1,90 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import "../styles/SalesOrderPage.css";
+package com.company.mrp.service;
 
-import axios from "axios";
+import java.util.List;
 
-function SalesOrderPage() {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-    const [customers, setCustomers] = useState([]);
-    const [items, setItems] = useState([]);
-    const [orders, setOrders] = useState([]);
+import com.company.mrp.dto.SalesOrderRequest;
+import com.company.mrp.entity.Customer;
+import com.company.mrp.entity.Item;
+import com.company.mrp.entity.SalesOrder;
+import com.company.mrp.repository.CustomerRepository;
+import com.company.mrp.repository.ItemRepository;
+import com.company.mrp.repository.SalesOrderRepository;
 
-    const [selectedItem, setSelectedItem] = useState(null);
+@Service
+public class SalesOrderService {
 
-    const [form, setForm] = useState({
+    @Autowired
+    private SalesOrderRepository salesOrderRepository;
 
-        customerId: "",
-        itemId: "",
-        quantity: "",
-        orderDate: ""
+    @Autowired
+    private CustomerRepository customerRepository;
 
-    });
+    @Autowired
+    private ItemRepository itemRepository;
 
-    useEffect(() => {
+    @Transactional
+    public SalesOrder addSalesOrder(SalesOrderRequest request) {
 
-        loadCustomers();
-        loadItems();
-        loadOrders();
+        System.out.println("Saving Sales Order...");
 
-    }, []);
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer Not Found"));
 
-    const loadCustomers = async () => {
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new RuntimeException("Item Not Found"));
 
-        try {
-
-            const res = await axios.get("http://localhost:8081/api/customers");
-
-            setCustomers(res.data);
-
-        } catch (err) {
-
-            console.log(err);
-
+        if (item.getQuantity() < request.getQuantity()) {
+            throw new RuntimeException("Insufficient Stock");
         }
 
-    };
+        SalesOrder lastOrder = salesOrderRepository.findTopByOrderByIdDesc();
 
-    const loadItems = async () => {
+        String nextCode = "SO001";
 
-        try {
+        if (lastOrder != null && lastOrder.getSalesOrderCode() != null) {
 
-            const res = await axios.get("http://localhost:8081/api/items");
+            try {
 
-            setItems(res.data);
+                int number = Integer.parseInt(lastOrder.getSalesOrderCode().substring(2));
 
-        } catch (err) {
+                nextCode = String.format("SO%03d", number + 1);
 
-            console.log(err);
+            } catch (Exception e) {
 
+                nextCode = "SO001";
+
+            }
         }
 
-    };
+        SalesOrder order = new SalesOrder();
 
-    const loadOrders = async () => {
+        order.setSalesOrderCode(nextCode);
+        order.setCustomer(customer);
+        order.setItem(item);
+        order.setQuantity(request.getQuantity());
+        order.setPrice(item.getPrice());
+        order.setOrderDate(request.getOrderDate());
 
-        try {
+        item.setQuantity(item.getQuantity() - request.getQuantity());
 
-            const res = await axios.get("http://localhost:8081/api/sales-orders");
+        itemRepository.save(item);
 
-            setOrders(res.data);
+        SalesOrder savedOrder = salesOrderRepository.save(order);
 
-        } catch (err) {
+        System.out.println("Saved Successfully : " + savedOrder.getId());
 
-            console.log(err);
+        return savedOrder;
+    }
 
-        }
+    public List<SalesOrder> getAll() {
+        return salesOrderRepository.findAll();
+    }
 
-    };
-
-    const handleChange = (e) => {
-
-        const { name, value } = e.target;
-
-        setForm({
-
-            ...form,
-
-            [name]: value
-
-        });
-
-        if (name === "itemId") {
-
-            const item = items.find(
-
-                i => i.id === Number(value)
-
-            );
-
-            setSelectedItem(item);
-
-        }
-
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        if (!selectedItem) {
-
-            alert("Please select Item");
-
-            return;
-
-        }
-
-        if (Number(form.quantity) > selectedItem.quantity) {
-
-            alert("Not enough stock available");
-
-            return;
-
-        }
-
-        try {
-
-            await axios.post(
-
-                "http://localhost:8081/api/sales-orders",
-
-                form
-
-            );
-
-            alert("Sales Order Created Successfully");
-
-            loadOrders();
-
-            setForm({
-
-                customerId: "",
-                itemId: "",
-                quantity: "",
-                orderDate: ""
-
-            });
-
-            setSelectedItem(null);
-
-        } catch (err) {
-
-            console.log(err);
-
-            alert("Error Creating Sales Order");
-
-        }
-
-    };
-
-    const deleteOrder = async (id) => {
-
-        if (!window.confirm("Delete this Sales Order?"))
-
-            return;
-
-        try {
-
-            await axios.delete(
-
-                `http://localhost:8081/api/sales-orders/${id}`
-
-            );
-
-            loadOrders();
-
-        } catch (err) {
-
-            console.log(err);
-
-        }
-
-    };
-    return (
-
-        <div className="dashboard-container">
-
-            <Sidebar />
-
-            <div className="dashboard-content">
-
-                <h1 className="page-title">
-                    Sales Order Management
-                </h1>
-
-                <div className="card">
-
-                    <h2>Create Sales Order</h2>
-
-                    <form onSubmit={handleSubmit}>
-
-                        <div className="form-grid">
-
-                            <select
-                                name="customerId"
-                                value={form.customerId}
-                                onChange={handleChange}
-                                required
-                            >
-
-                                <option value="">
-                                    Select Customer
-                                </option>
-
-                                {
-
-                                    customers.map(customer => (
-
-                                        <option
-                                            key={customer.id}
-                                            value={customer.id}
-                                        >
-
-                                            {customer.customerCode} - {customer.customerName}
-
-                                        </option>
-
-                                    ))
-
-                                }
-
-                            </select>
-
-                            <select
-                                name="itemId"
-                                value={form.itemId}
-                                onChange={handleChange}
-                                required
-                            >
-
-                                <option value="">
-                                    Select Item
-                                </option>
-
-                                {
-
-                                    items.map(item => (
-
-                                        <option
-                                            key={item.id}
-                                            value={item.id}
-                                        >
-
-                                            {item.itemCode} - {item.itemName}
-
-                                        </option>
-
-                                    ))
-
-                                }
-
-                            </select>
-
-                            <input
-                                type="number"
-                                name="quantity"
-                                placeholder="Quantity"
-                                value={form.quantity}
-                                onChange={handleChange}
-                                required
-                            />
-
-                            <input
-                                type="date"
-                                name="orderDate"
-                                value={form.orderDate}
-                                onChange={handleChange}
-                                required
-                            />
-
-                        </div>
-
-                        {
-
-                            selectedItem && (
-
-                                <div className="stock-box">
-
-                                    <div>
-
-                                        <strong>Price</strong>
-
-                                        <p>₹ {selectedItem.price}</p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <strong>Available Stock</strong>
-
-                                        <p>{selectedItem.quantity}</p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <strong>Description</strong>
-
-                                        <p>{selectedItem.description}</p>
-
-                                    </div>
-
-                                </div>
-
-                            )
-
-                        }
-
-                        <button
-                            type="submit"
-                            className="btn-primary"
-                        >
-
-                            Create Sales Order
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-                <div className="card">
-
-                    <h2>Sales Orders</h2>
-
-                    <table className="data-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>SO Code</th>
-
-                                <th>Customer</th>
-
-                                <th>Item</th>
-
-                                <th>Quantity</th>
-
-                                <th>Price</th>
-
-                                <th>Date</th>
-
-                                <th>Action</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {
-
-                                orders.length === 0 ?
-
-                                (
-
-                                    <tr>
-
-                                        <td
-                                            colSpan="7"
-                                            className="no-data"
-                                        >
-
-                                            No Sales Orders Found
-
-                                        </td>
-
-                                    </tr>
-
-                                )
-
-                                :
-
-                                (
-
-                                    orders.map(order => (
-
-                                        <tr key={order.id}>
-
-                                            <td>{order.salesOrderCode}</td>
-
-                                            <td>{order.customer?.customerName}</td>
-
-                                            <td>{order.item?.itemName}</td>
-
-                                            <td>{order.quantity}</td>
-
-                                            <td>₹ {order.price}</td>
-
-                                            <td>{order.orderDate}</td>
-
-                                            <td>
-
-                                                <button
-                                                    className="btn-delete"
-                                                    onClick={() => deleteOrder(order.id)}
-                                                >
-
-                                                    Delete
-
-                                                </button>
-
-                                            </td>
-
-                                        </tr>
-
-                                    ))
-
-                                )
-
-                            }
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    );
-
+    public void delete(Long id) {
+        salesOrderRepository.deleteById(id);
+    }
 }
-
-export default SalesOrderPage;

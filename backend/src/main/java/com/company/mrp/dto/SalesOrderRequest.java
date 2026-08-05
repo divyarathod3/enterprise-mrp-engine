@@ -5,15 +5,9 @@ import java.time.LocalDate;
 public class SalesOrderRequest {
 
     private Long customerId;
-
     private Long itemId;
-
     private Integer quantity;
-
     private LocalDate orderDate;
-
-    public SalesOrderRequest() {
-    }
 
     public Long getCustomerId() {
         return customerId;
@@ -46,5 +40,4 @@ public class SalesOrderRequest {
     public void setOrderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
     }
-
 }

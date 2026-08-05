@@ -15,27 +15,23 @@ import com.company.mrp.service.SalesOrderService;
 public class SalesOrderController {
 
     @Autowired
-    private SalesOrderService service;
+    private SalesOrderService salesOrderService;
 
     @PostMapping
-    public SalesOrder add(@RequestBody SalesOrderRequest request) {
+    public SalesOrder createSalesOrder(@RequestBody SalesOrderRequest request) {
 
-        return service.addSalesOrder(request);
+        System.out.println("Received Sales Order Request");
 
+        return salesOrderService.addSalesOrder(request);
     }
 
     @GetMapping
-    public List<SalesOrder> getAll() {
-
-        return service.getAll();
-
+    public List<SalesOrder> getAllSalesOrders() {
+        return salesOrderService.getAll();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-
-        service.delete(id);
-
+    public void deleteSalesOrder(@PathVariable Long id) {
+        salesOrderService.delete(id);
     }
-
 }

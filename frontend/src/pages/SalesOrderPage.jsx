@@ -1,177 +1,315 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import "../styles/SalesOrderPage.css";
+import axios from "axios";
+
+const API = "http://localhost:8081/api";
 
 function SalesOrderPage() {
-  const [form, setForm] = useState({
-    customerName: "",
-    itemCode: "",
-    itemName: "",
-    quantity: "",
-    orderDate: "",
-  });
 
-  const [orders, setOrders] = useState([]);
+    const [customers, setCustomers] = useState([]);
+    const [items, setItems] = useState([]);
+    const [orders, setOrders] = useState([]);
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
+    const [form, setForm] = useState({
+        customerId: "",
+        itemId: "",
+        quantity: "",
+        orderDate: ""
     });
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    useEffect(() => {
+        loadCustomers();
+        loadItems();
+        loadOrders();
+    }, []);
 
-    const newOrder = {
-      soCode: `SO${String(orders.length + 1).padStart(3, "0")}`,
-      ...form,
+    const loadCustomers = async () => {
+        const res = await axios.get(`${API}/customers`);
+        setCustomers(res.data);
     };
 
-    setOrders([...orders, newOrder]);
+    const loadItems = async () => {
+        const res = await axios.get(`${API}/items`);
+        setItems(res.data);
+    };
 
-    setForm({
-      customerName: "",
-      itemCode: "",
-      itemName: "",
-      quantity: "",
-      orderDate: "",
-    });
-  };
+    const loadOrders = async () => {
+        const res = await axios.get(`${API}/sales-orders`);
+        setOrders(res.data);
+    };
 
-  return (
-    <div className="dashboard-container">
-      <Sidebar />
+    const handleChange = (e) => {
 
-      <div className="dashboard-content">
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
 
-        <h1 className="page-title">
-          Sales Order Management
-        </h1>
+    };
 
-        <div className="card">
+    const handleSubmit = async (e) => {
 
-          <h2>Create Sales Order</h2>
+        e.preventDefault();
 
-          <form onSubmit={handleSubmit}>
+        try {
 
-            <div className="form-grid">
+            await axios.post(`${API}/sales-orders`, {
+                customerId: Number(form.customerId),
+                itemId: Number(form.itemId),
+                quantity: Number(form.quantity),
+                orderDate: form.orderDate
+            });
 
-              <input
-                type="text"
-                name="customerName"
-                placeholder="Customer Name"
-                value={form.customerName}
-                onChange={handleChange}
-                required
-              />
+            alert("Sales Order Created");
 
-              <input
-                type="text"
-                name="itemCode"
-                placeholder="Item Code"
-                value={form.itemCode}
-                onChange={handleChange}
-                required
-              />
+            loadOrders();
 
-              <input
-                type="text"
-                name="itemName"
-                placeholder="Item Name"
-                value={form.itemName}
-                onChange={handleChange}
-                required
-              />
+            setForm({
+                customerId: "",
+                itemId: "",
+                quantity: "",
+                orderDate: ""
+            });
 
-              <input
-                type="number"
-                name="quantity"
-                placeholder="Quantity"
-                value={form.quantity}
-                onChange={handleChange}
-                required
-              />
+        } catch (err) {
 
-              <input
-                type="date"
-                name="orderDate"
-                value={form.orderDate}
-                onChange={handleChange}
-                required
-              />
+            console.log(err);
+
+            alert("Unable to create Sales Order");
+
+        }
+
+    };
+
+    const deleteOrder = async (id) => {
+
+        if (!window.confirm("Delete Sales Order?"))
+            return;
+
+        await axios.delete(`${API}/sales-orders/${id}`);
+
+        loadOrders();
+
+    };
+
+    return (
+
+        <div className="dashboard-container">
+
+            <Sidebar />
+
+            <div className="dashboard-content">
+
+                <h1 className="page-title">
+                    Sales Order Management
+                </h1>
+
+                <div className="card">
+
+                    <h2>Create Sales Order</h2>
+
+                    <form onSubmit={handleSubmit}>
+
+                        <div className="form-grid">
+
+                            <select
+                                name="customerId"
+                                value={form.customerId}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Customer</option>
+
+                                {customers.map(customer => (
+
+                                    <option
+                                        key={customer.id}
+                                        value={customer.id}
+                                    >
+
+                                        {customer.customerName}
+
+                                    </option>
+
+                                ))}
+
+                            </select>
+
+                            <select
+                                name="itemId"
+                                value={form.itemId}
+                                onChange={handleChange}
+                                required
+                            >
+
+                                <option value="">
+                                    Select Item
+                                </option>
+
+                                {items.map(item => (
+
+                                    <option
+                                        key={item.id}
+                                        value={item.id}
+                                    >
+
+                                        {item.itemName}
+
+                                    </option>
+
+                                ))}
+
+                            </select>
+
+                            <input
+                                type="number"
+                                name="quantity"
+                                placeholder="Quantity"
+                                value={form.quantity}
+                                onChange={handleChange}
+                                required
+                            />
+
+                            <input
+                                type="date"
+                                name="orderDate"
+                                value={form.orderDate}
+                                onChange={handleChange}
+                                required
+                            />
+
+                        </div>
+
+                        <button
+                            className="btn-primary"
+                            type="submit"
+                        >
+
+                            Create Order
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div className="card">
+
+                    <h2>Sales Orders</h2>
+
+                    <table className="data-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>SO Code</th>
+
+                            <th>Customer</th>
+
+                            <th>Item</th>
+
+                            <th>Qty</th>
+
+                            <th>Price</th>
+
+                            <th>Date</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {
+
+                            orders.length === 0 ?
+
+                            (
+
+                                <tr>
+
+                                    <td
+                                        colSpan="7"
+                                        className="no-data"
+                                    >
+
+                                        No Sales Orders
+
+                                    </td>
+
+                                </tr>
+
+                            )
+
+                            :
+
+                            (
+
+                                orders.map(order => (
+
+                                    <tr key={order.id}>
+
+                                        <td>
+                                            {order.salesOrderCode}
+                                        </td>
+
+                                        <td>
+                                            {order.customer?.customerName}
+                                        </td>
+
+                                        <td>
+                                            {order.item?.itemName}
+                                        </td>
+
+                                        <td>
+                                            {order.quantity}
+                                        </td>
+
+                                        <td>
+                                            ₹ {order.price}
+                                        </td>
+
+                                        <td>
+                                            {order.orderDate}
+                                        </td>
+
+                                        <td>
+
+                                            <button
+                                                className="btn-delete"
+                                                onClick={() => deleteOrder(order.id)}
+                                            >
+
+                                                Delete
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            )
+
+                        }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
-            <button type="submit" className="btn-primary">
-              Create Order
-            </button>
-
-          </form>
-
         </div>
 
-        <div className="card">
+    );
 
-          <h2>Sales Orders</h2>
-
-          <table className="data-table">
-
-            <thead>
-              <tr>
-                <th>SO Code</th>
-                <th>Customer</th>
-                <th>Item Code</th>
-                <th>Item Name</th>
-                <th>Qty</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              {orders.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="no-data">
-                    No Sales Orders Available
-                  </td>
-                </tr>
-              ) : (
-                orders.map((order, index) => (
-                  <tr key={index}>
-                    <td>{order.soCode}</td>
-                    <td>{order.customerName}</td>
-                    <td>{order.itemCode}</td>
-                    <td>{order.itemName}</td>
-                    <td>{order.quantity}</td>
-                    <td>{order.orderDate}</td>
-
-                    <td>
-
-                      <button className="btn-edit">
-                        Edit
-                      </button>
-
-                      <button className="btn-delete">
-                        Delete
-                      </button>
-
-                    </td>
-
-                  </tr>
-                ))
-              )}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-    </div>
-  );
 }
 
 export default SalesOrderPage;
